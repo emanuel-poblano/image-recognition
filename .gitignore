@@ -1,0 +1,40 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# ===== Virtual Environments =====
+venv/
+.env/
+.env.local/
+gym-ai-env/
+
+# ===== OS Files =====
+.DS_Store
+Thumbs.db
+
+# ===== Logs =====
+*.log
+
+# ===== IDE / Editor =====
+.vscode/
+.idea/
+*.swp
+
+# ===== Jupyter =====
+.ipynb_checkpoints/
+
+# ===== Media / Output =====
+*.mp4
+*.avi
+*.mov
+outputs/
+results/
+
+# ===== ML Models (Future) =====
+models/
+checkpoints/
+
+# ===== Test Artifacts =====
+.pytest_cache/
