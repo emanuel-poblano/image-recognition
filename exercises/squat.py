@@ -1,23 +1,38 @@
-from exercises.base import Exercise
+from exercises.base import ExerciseBase
 from analysis.angles import calculate_angle
+from mediapipe.python.solutions.pose import PoseLandmark
 
-class Squat(Exercise):
-    def analyze(self, lm):
-        hip = lm["hip"]
-        knee = lm["knee"]
-        ankle = lm["ankle"]
 
-        knee_angle = calculate_angle(hip, knee, ankle)
+class SquatExercise(ExerciseBase):
+    def __init__(self):
+        super().__init__(name="Squat")
+        self.state = "up"
+        
+    def update(self, landmarks):
+        hip = landmarks.landmark[PoseLandmark.LEFT_HIP.value]
+        knee = landmarks.landmark[PoseLandmark.LEFT_KNEE.value]
+        ankle = landmarks.landmark[PoseLandmark.LEFT_ANKLE.value]
 
-        feedback = "Good form"
+        angle = calculate_angle(
+            (hip.x, hip.y),
+            (knee.x, knee.y),
+            (ankle.x, ankle.y),
+        )
 
-        if knee_angle > 140:
-            self.stage = "up"
-        if knee_angle < 90 and self.stage == "up":
-            self.stage = "down"
+        feedback = ""
+
+        if angle < 70:
+            self.state = "down"
+            feedback = "Good depth"
+        elif angle > 160 and self.state == "down":
             self.reps += 1
-
-        if knee_angle > 120:
+            self.state = "up"
+            feedback = "Squat counted!"
+        elif angle > 100 and self.state == "up":
             feedback = "Go deeper"
 
-        return feedback, self.reps
+        return {
+            "reps": self.reps,
+            "feedback": feedback,
+            "angle": round(angle, 1),
+    }

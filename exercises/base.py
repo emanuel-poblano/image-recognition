@@ -1,12 +1,19 @@
-# Abstract exercise class
-
 from abc import ABC, abstractmethod
 
-class Exercise(ABC):
-    def __init__(self):
+
+class ExerciseBase(ABC):
+    def __init__(self, name: str):
+        self.name = name
         self.reps = 0
-        self.stage = None
 
     @abstractmethod
-    def analyze(self, landmarks):
+    def update(self, landmarks) -> dict:
+        """
+        Process pose landmarks and return:
+        {
+            reps: int,
+            feedback: str,
+            angle: float
+        }
+        """
         pass

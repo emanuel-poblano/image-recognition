@@ -1,8 +1,24 @@
 import cv2
 
-def draw_feedback(frame, text, reps):
-    cv2.putText(frame, f"Reps: {reps}", (20,40),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2)
 
-    cv2.putText(frame, text, (20,80),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
+def draw_overlay(frame, exercise_name, reps, feedback):
+    cv2.putText(
+        frame,
+        f"{exercise_name}: {reps}",
+        (20, 40),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1,
+        (0, 255, 0),
+        2,
+    )
+
+    if feedback:
+        cv2.putText(
+            frame,
+            feedback,
+            (20, 80),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.8,
+            (255, 255, 0),
+            2,
+        )

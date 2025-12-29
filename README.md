@@ -40,24 +40,29 @@ Live UI Overlay (OpenCV)
 ```
 image-recognition/
 │── app/
-│   └── main.py            # Application entry point
-│
+│   ├── main.py            # Application entry point
+│   ├── camera.py
+│   └── config.py
 │── pose/
-│   └── estimator.py       # MediaPipe pose wrapper
+│   ├── estimator.py       # MediaPipe pose wrapper
+│   └── smoother.py
 │
 │── exercises/
 │   ├── base.py            # Abstract exercise class
-│   └── squat.py           # Squat logic (angles, reps, feedback)
+│   ├── squat.py           # Squat logic (angles, reps, feedback)
+│   ├── deadlift.py
+│   └── pushup.py
 │
 │── analysis/
 │   └── angles.py          # Joint angle calculations
 │
 │── feedback/
-│   └── overlay.py         # UI text overlay helpers
-│
+│   ├── overlay.py         # UI text overlay helpers
+│   └── messages.py
+│       
 │── tests/
-│   └── test_angles.py     # Unit tests
-│
+│   ├── test_angles.py     # Unit tests
+│   └── test_reps.py
 │── requirements.txt
 │── README.md
 ```
