@@ -161,12 +161,6 @@ pytest tests/
 
 ---
 
-## 🏆 Resume Description
-
-> Built a production-grade Gym Form Correction AI using Python, MediaPipe, and OpenCV that analyzes exercise posture in real time, counts repetitions, and provides corrective feedback through a modular, scalable architecture.
-
----
-
 ## 📜 License
 
 MIT License
