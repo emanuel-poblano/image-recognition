@@ -7,15 +7,18 @@ from exercises import EXERCISES
 REQUIRED = {"squat": ("hip", "knee", "ankle"), "pushup": ("shoulder", "elbow", "wrist")}
 
 
-def process_frames(frames, pose, exercise_name, on_frame=None):
+def process_frames(frames, pose, exercise_name, on_frame=None, session=None):
     """Run pose + exercise tracking over frames. Frames without a reliable
     pose are skipped (counted in tracking_rate), never fed to the counter."""
-    exercise = EXERCISES[exercise_name]()
-    session = Session(exercise)
+    if session is None:
+        exercise = EXERCISES[exercise_name]()
+        session = Session(exercise)
+    else:
+        exercise = session.exercise
     feedback = "No person detected"
     for frame in frames:
         pl = pose.process_frame(frame)
-        lm = extract_landmarks(pl, REQUIRED[exercise_name])
+        lm = extract_landmarks(pl, REQUIRED[exercise_name], frame.shape)
         if lm is None:
             feedback = "Body not fully visible"
             session.update(False)

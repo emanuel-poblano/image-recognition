@@ -8,7 +8,8 @@ SIDES = {
 MIN_VISIBILITY = 0.5
 
 
-def extract_landmarks(pose_landmarks, required, min_visibility=MIN_VISIBILITY):
+def extract_landmarks(pose_landmarks, required, frame_shape,
+                      min_visibility=MIN_VISIBILITY):
     """Return {joint: (x, y)} for the more visible body side, or None if any
     required joint is missing or below min_visibility."""
     if pose_landmarks is None:
@@ -22,4 +23,9 @@ def extract_landmarks(pose_landmarks, required, min_visibility=MIN_VISIBILITY):
             best, best_score = idx, sum(vis)
     if best is None:
         return None
-    return {j: (pts[i].x, pts[i].y) for j, i in best.items()}
+    height, width = frame_shape[:2]
+    return {
+        joint: (pts[index].x * width, pts[index].y * height)
+        for joint, index in best.items()
+        if pts[index].visibility >= min_visibility
+    }

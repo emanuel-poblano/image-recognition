@@ -36,10 +36,12 @@ class Camera:
     def frames(self):
         """Yield frames until end of file / unrecoverable failure."""
         failures = 0
+        recovery_attempts = 0
         while True:
             ok, frame = self.cap.read()
             if ok and frame is not None:
                 failures = 0
+                recovery_attempts = 0
                 yield frame
                 continue
             if self.is_file:
@@ -47,20 +49,22 @@ class Camera:
             failures += 1
             if failures < self.max_failures:
                 continue
-            if not self._reconnect():
-                raise CameraError("Camera disconnected and could not be reopened")
             failures = 0
+            while recovery_attempts < self.reconnect_attempts:
+                recovery_attempts += 1
+                if self._reconnect():
+                    break
+            else:
+                raise CameraError("Camera disconnected and could not be reopened")
 
     def _reconnect(self):
         self.release()
-        for _ in range(self.reconnect_attempts):
-            time.sleep(self.reconnect_delay)
-            try:
-                self._open()
-                return True
-            except CameraError:
-                pass
-        return False
+        time.sleep(self.reconnect_delay)
+        try:
+            self._open()
+            return True
+        except CameraError:
+            return False
 
     def release(self):
         if self.cap is not None:

@@ -19,10 +19,10 @@ def evaluate(labels_path):
     base = os.path.dirname(os.path.abspath(labels_path))
     with open(labels_path) as f:
         labels = json.load(f)
-    pose = PoseEstimator()
     rows = []
-    try:
-        for item in labels:
+    for item in labels:
+        pose = PoseEstimator()
+        try:
             cam = Camera(os.path.join(base, item["video"]))
             try:
                 ex, sess = process_frames(cam.frames(), pose, item["exercise"])
@@ -31,8 +31,8 @@ def evaluate(labels_path):
             s = sess.summary(0)
             rows.append({**item, "counted": ex.reps, "error": ex.reps - item["true_reps"],
                          "tracking_rate": s["tracking_rate"]})
-    finally:
-        pose.close()
+        finally:
+            pose.close()
     return rows
 
 

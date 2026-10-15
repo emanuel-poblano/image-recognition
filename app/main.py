@@ -6,6 +6,8 @@ import cv2
 
 from app.camera import Camera, CameraError
 from app.runner import process_frames
+from analysis.session import Session
+from exercises import EXERCISES
 from feedback.overlay import draw_feedback
 from pose.estimator import PoseEstimator
 
@@ -26,6 +28,7 @@ def main(argv=None):
 
     pose = PoseEstimator()
     start = time.time()
+    session = Session(EXERCISES[args.exercise]())
 
     def on_frame(frame, landmarks, feedback, reps):
         pose.draw_landmarks(frame, landmarks)
@@ -33,21 +36,22 @@ def main(argv=None):
         cv2.imshow("Gym Form AI", frame)
         return not (cv2.waitKey(1) & 0xFF == ord("q"))
 
-    session = None
+    status = 0
     try:
-        exercise, session = process_frames(cam.frames(), pose, args.exercise, on_frame)
+        process_frames(cam.frames(), pose, args.exercise, on_frame, session=session)
     except CameraError as e:
         print(f"[ERROR] {e}", file=sys.stderr)
+        status = 1
     finally:
         cam.release()
         pose.close()
         cv2.destroyAllWindows()
 
-    if session is not None:
-        print(session.to_text(time.time() - start))
-        if args.summary_json:
-            session.save(args.summary_json, time.time() - start)
-    return 0
+    duration = time.time() - start
+    print(session.to_text(duration))
+    if args.summary_json:
+        session.save(args.summary_json, duration)
+    return status
 
 
 if __name__ == "__main__":

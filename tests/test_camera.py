@@ -52,3 +52,21 @@ def test_gives_up_when_reconnect_fails():
     assert next(it) == 1
     with pytest.raises(CameraError):
         next(it)
+
+
+def test_recovery_budget_is_not_reset_until_a_frame_arrives():
+    calls = []
+
+    def factory(_):
+        calls.append(1)
+        if len(calls) == 1:
+            return FakeCap([(True, 1), (False, None)])
+        return FakeCap([])
+
+    cam = Camera(0, max_failures=1, reconnect_attempts=2, reconnect_delay=0,
+                 capture_factory=factory)
+    frames = cam.frames()
+    assert next(frames) == 1
+    with pytest.raises(CameraError):
+        next(frames)
+    assert len(calls) == 3
