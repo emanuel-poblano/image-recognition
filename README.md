@@ -171,3 +171,15 @@ MIT License
 
 **Emanuel Poblano**
 Computer Vision / Software Engineering Project
+
+---
+
+## ▶️ Usage
+
+```
+python -m app.main --exercise squat|pushup [--source 0|video.mp4] [--summary-json out.json]
+python -m evaluation.evaluate evaluation/labels.json   # accuracy on labelled videos
+python -m pytest
+```
+
+See [docs/ACCURACY.md](docs/ACCURACY.md) for validation status and known limitations.
